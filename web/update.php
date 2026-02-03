@@ -11,17 +11,17 @@
 use Drupal\Core\Update\UpdateKernel;
 use Symfony\Component\HttpFoundation\Request;
 
-$autoloader = require_once 'autoload.php';
+$autoloader = include_once 'autoload.php';
 
 // Disable garbage collection during test runs. Under certain circumstances the
 // update path will create so many objects that garbage collection causes
 // segmentation faults.
 if (drupal_valid_test_ua()) {
-  gc_collect_cycles();
-  gc_disable();
+    gc_collect_cycles();
+    gc_disable();
 }
 
-$kernel = new UpdateKernel('prod', $autoloader, FALSE);
+$kernel = new UpdateKernel('prod', $autoloader, false);
 $request = Request::createFromGlobals();
 
 $response = $kernel->handle($request);

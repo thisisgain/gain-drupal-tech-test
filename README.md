@@ -129,7 +129,7 @@ We want a simple JSON feed for support tooling.
 **Requirements:**
 
 Add a route and controller in `gain_drupal_tech_test` that returns JSON at:
-`/gx-support/latest-articles`
+`/latest-articles`
 
 The endpoint should return a JSON array of the latest 10 article nodes with fields:
 - Node ID

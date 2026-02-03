@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\gx_support_demo\Plugin\Block;
+namespace Drupal\gain_drupal_tech_test\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @Block(
  *   id = "recent_articles_block",
  *   admin_label = @Translation("Recent Articles"),
- *   category = @Translation("GX Support Demo"),
+ *   category = @Translation("GAIN Drupal Tech Test"),
  * )
  */
 class RecentArticlesBlock extends BlockBase implements ContainerFactoryPluginInterface {
@@ -44,41 +44,56 @@ class RecentArticlesBlock extends BlockBase implements ContainerFactoryPluginInt
 
   /**
    * {@inheritdoc}
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The container.
+   * @param array $configuration
+   *   Configuration.
+   * @param string $plugin_id
+   *   Plugin ID.
+   * @param mixed $plugin_definition
+   *   Plugin definition.
+   *
+   * @return static
+   *   New instance.
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('entity_type.manager')
-    );
+          $configuration,
+          $plugin_id,
+          $plugin_definition,
+          $container->get('entity_type.manager')
+      );
   }
 
   /**
    * {@inheritdoc}
+   *
+   * @return array
+   *   Renderable array.
    */
   public function build() {
     $node_storage = $this->entityTypeManager->getStorage('node');
-    
+
     // BUG 1: Query doesn't filter by published status
     // BUG 2: Query doesn't filter by content type 'article'
     // BUG 3: Wrong sort order (oldest first instead of newest)
-    // BUG 4: Hardcoded limit instead of configurable
+    // BUG 4: Hardcoded limit instead of configurable.
     $query = $node_storage->getQuery()
-      ->sort('created', 'ASC')  // Should be DESC for newest first
-      ->range(0, 10)  // Should be configurable, default 5
+      ->sort('created', 'ASC')
+      ->range(0, 10)
       ->accessCheck(TRUE);
-    
+
     $nids = $query->execute();
     $nodes = $node_storage->loadMultiple($nids);
-    
+
     $items = [];
     foreach ($nodes as $node) {
       $items[] = [
         '#markup' => '<div class="recent-article">' . $node->getTitle() . '</div>',
       ];
     }
-    
+
     return [
       '#theme' => 'item_list',
       '#items' => $items,
