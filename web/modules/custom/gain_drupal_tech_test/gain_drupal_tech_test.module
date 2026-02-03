@@ -1,0 +1,56 @@
+<?php
+
+/**
+ * @file
+ * Contains gain_drupal_tech_test.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function gain_drupal_tech_test_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.gain_drupal_tech_test':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Demo module for tech test. Contains a Recent Articles block and JSON endpoint.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_install().
+ */
+function gain_drupal_tech_test_install() {
+  // Create some sample article nodes for testing
+  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
+  
+  $sample_articles = [
+    'First Test Article',
+    'Second Test Article', 
+    'Third Test Article',
+    'Fourth Test Article',
+    'Fifth Test Article',
+    'Sixth Test Article (Unpublished)',
+  ];
+  
+  foreach ($sample_articles as $index => $title) {
+    $node = $node_storage->create([
+      'type' => 'article',
+      'title' => $title,
+      'status' => $index < 5 ? 1 : 0, // Last one unpublished
+      'created' => time() - (86400 * $index), // Spread over days
+      'body' => [
+        'value' => 'This is sample content for ' . $title,
+        'format' => 'basic_html',
+      ],
+    ]);
+    $node->save();
+  }
+  
+  \Drupal::messenger()->addMessage(t('GAIN Drupal Tech Test module installed with sample content.'));
+}

@@ -1,0 +1,5 @@
+name: GAIN Drupal Tech Test
+type: module
+description: 'Demo module for tech test with intentional bugs to fix'
+core_version_requirement: ^11
+package: Custom

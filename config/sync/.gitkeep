@@ -1,0 +1,14 @@
+# Configuration sync directory
+
+This directory will contain exported Drupal configuration files.
+After site installation, you can export configuration using:
+
+```bash
+drush config:export
+```
+
+Or with DDEV:
+
+```bash
+ddev drush config:export
+```

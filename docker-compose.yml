@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  web:
+    image: drupal:11-php8.3-apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web:/opt/drupal/web
+      - ./vendor:/opt/drupal/vendor
+      - ./composer.json:/opt/drupal/composer.json
+      - ./composer.lock:/opt/drupal/composer.lock
+    environment:
+      - DRUPAL_DATABASE_HOST=db
+      - DRUPAL_DATABASE_PORT=3306
+      - DRUPAL_DATABASE_NAME=drupal
+      - DRUPAL_DATABASE_USERNAME=drupal
+      - DRUPAL_DATABASE_PASSWORD=drupal
+    depends_on:
+      - db
+    working_dir: /opt/drupal
+
+  db:
+    image: mariadb:10.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=drupal
+      - MYSQL_USER=drupal
+      - MYSQL_PASSWORD=drupal
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data:
