@@ -1,0 +1,3 @@
+access latest articles:
+  title: 'Access latest articles JSON endpoint'
+  description: 'Allow authenticated users to access latest articles'
