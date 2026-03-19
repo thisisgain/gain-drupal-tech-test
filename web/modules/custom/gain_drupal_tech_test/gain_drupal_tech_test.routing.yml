@@ -1,0 +1,7 @@
+gain_drupal_tech_test.latest_articles:
+  path: '/latest-articles'
+  defaults:
+    _controller: '\Drupal\gain_drupal_tech_test\Controller\LatestArticlesController::getLatestArticles'
+    _title: 'Latest Articles'
+  requirements:
+    _permission: 'access latest articles'

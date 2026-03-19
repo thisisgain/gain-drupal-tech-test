@@ -1,0 +1,4 @@
+services:
+  gain_drupal_tech_test.article_service:
+    class: Drupal\gain_drupal_tech_test\Service\ArticleService
+    arguments: ['@entity_type.manager']
