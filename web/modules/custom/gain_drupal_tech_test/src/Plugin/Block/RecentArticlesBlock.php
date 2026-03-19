@@ -6,6 +6,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides a 'Recent Articles' Block.
@@ -42,6 +43,12 @@ class RecentArticlesBlock extends BlockBase implements ContainerFactoryPluginInt
     $this->entityTypeManager = $entity_type_manager;
   }
 
+    public function defaultConfiguration() {
+    return [
+      'items_count' => 5,
+    ];
+  }
+
   /**
    * {@inheritdoc}
    *
@@ -66,6 +73,23 @@ class RecentArticlesBlock extends BlockBase implements ContainerFactoryPluginInt
       );
   }
 
+
+  public function blockForm($form, FormStateInterface $form_state) {
+    $form['items_count'] = [
+      //'#type' => 'number',
+      '#type' => 'textfield',
+      '#title' => $this->t('Number of items'),
+      '#default_value' => $this->configuration['items_count'],
+      '#min' => 1,
+      '#max' => 50,
+    ];
+
+  return $form;
+}
+
+public function blockSubmit($form, FormStateInterface $form_state) {
+  $this->configuration['items_count'] = $form_state->getValue('items_count');
+}
   /**
    * {@inheritdoc}
    *
@@ -75,13 +99,17 @@ class RecentArticlesBlock extends BlockBase implements ContainerFactoryPluginInt
   public function build() {
     $node_storage = $this->entityTypeManager->getStorage('node');
 
+    $node_count = $this->configuration['items_count'] ?? 5;
+
     // BUG 1: Query doesn't filter by published status
     // BUG 2: Query doesn't filter by content type 'article'
     // BUG 3: Wrong sort order (oldest first instead of newest)
     // BUG 4: Hardcoded limit instead of configurable.
     $query = $node_storage->getQuery()
-      ->sort('created', 'ASC')
-      ->range(0, 10)
+      ->sort('created', 'DESC')
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->range(0, $node_count)
       ->accessCheck(TRUE);
 
     $nids = $query->execute();
