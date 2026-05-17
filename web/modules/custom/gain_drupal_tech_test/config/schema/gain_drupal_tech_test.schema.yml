@@ -1,0 +1,7 @@
+gain_drupal_tech_test.settings:
+  type: config_object
+  label: 'GAIN Drupal Tech Test settings'
+  mapping:
+    items_to_show:
+      type: integer
+      label: 'Number of recent articles to display'

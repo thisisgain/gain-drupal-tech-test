@@ -1,0 +1,5 @@
+gain_drupal_tech_test.settings:
+  title: 'Recent Articles Settings'
+  description: 'Configure Recent Articles block settings.'
+  parent: system.admin_config_content
+  route_name: gain_drupal_tech_test.settings
